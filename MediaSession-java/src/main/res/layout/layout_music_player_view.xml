@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="178dp"
+    android:layout_marginTop="8dp"
+    android:background="@drawable/shape_rad_bar"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <ImageView
+        android:id="@+id/iv_yy_tx"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="19dp" />
+
+    <com.yq.mediaSession.widget.PlayAnimationView
+        android:id="@+id/iv_music_animation"
+        android:layout_width="33dp"
+        android:layout_height="22dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="19dp"
+        android:layout_marginRight="19dp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_yy_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="18dp"
+        android:layout_toRightOf="@+id/iv_yy_tx"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        tools:text="周杰伦" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_yy_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_yy_author"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/iv_yy_tx"
+        android:textColor="#80FFFFFF"
+        android:textSize="18sp"
+        tools:text="Distance.mp3" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/tv_yy_previous"
+        android:layout_width="23dp"
+        android:layout_height="23dp"
+        android:layout_below="@+id/tv_yy_name"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_toRightOf="@+id/iv_yy_tx"
+        android:adjustViewBounds="true"
+        android:src="@drawable/icon_syq" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/tv_yy_pause"
+        android:layout_width="29dp"
+        android:layout_height="34dp"
+        android:layout_below="@+id/tv_yy_name"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="15dp"
+        android:layout_toRightOf="@+id/tv_yy_previous"
+        android:adjustViewBounds="true"
+        android:src="@drawable/selector_play_or_stop" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/tv_yy_next"
+        android:layout_width="23dp"
+        android:layout_height="23dp"
+        android:layout_below="@+id/tv_yy_name"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_toRightOf="@+id/tv_yy_pause"
+        android:adjustViewBounds="true"
+        android:src="@drawable/icon_xyq" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_play_model"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/iv_music_animation"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="35dp"
+        android:layout_marginRight="19dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/icon_bfms" />
+
+    <FrameLayout
+        android:layout_marginHorizontal="10dp"
+        android:id="@+id/fl_wrap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_yy_pause"
+        android:layout_marginTop="17dp">
+
+        <androidx.appcompat.widget.AppCompatSeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@null"
+            android:maxHeight="4dp"
+            android:minHeight="4dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
+            android:progressDrawable="@drawable/item_settings_progress1"
+            android:splitTrack="false"
+            android:thumb="@null"
+            android:thumbOffset="0dp" />
+    </FrameLayout>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_play_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fl_wrap"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="4dp"
+        android:textColor="#FFFFFF"
+        android:textSize="13sp"
+        tools:text="00:42" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_total_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fl_wrap"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="10dp"
+        android:textColor="#FFFFFF"
+        android:textSize="13sp"
+        tools:text="03:58" />
+</RelativeLayout>

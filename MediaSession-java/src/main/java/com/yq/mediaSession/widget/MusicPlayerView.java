@@ -1,0 +1,140 @@
+package com.yq.mediaSession.widget;
+
+
+import android.content.Context;
+import android.os.Build;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import androidx.annotation.RequiresApi;
+
+import com.yq.mediaSession.R;
+import com.yq.mediaSession.media.MusicInfoLiveData;
+import com.yq.mediaSession.media.MusicPlayManager;
+import com.yq.mediaSession.media.MusicProgressRefresher;
+
+
+/**
+ * @author: jyq
+ * @desc: 播放器view
+ * @date: 2025/4/11
+ */
+@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+public class MusicPlayerView extends RelativeLayout implements MusicProgressRefresher.OnProgressUpdateListener {
+    private static final String TAG = "MusicPlayerView";
+    View view = null;
+    ImageView mMusicHeader; //音乐头像
+    TextView mMusicAuthor; //音乐歌手
+    TextView mMusicName; //音乐名字
+    TextView mPlayTime; //当前播放的时间
+    TextView mTotalTime; //当前总时间
+    ImageView mMusicPlayModel; // 播放模式 是否是耳机
+    ImageView mMusicControlPre; // 上一首
+    ImageView mMusicControlPause; //播放或者暂停
+    ImageView mMusicControlNext; //下一首
+    PlayAnimationView mMusicAnimation; //播放动画
+    ProgressBar mSeekBar; //播放进度条
+    MusicProgressRefresher mProgressRefresher = new MusicProgressRefresher();
+
+    public MusicPlayerView(Context context) {
+        this(context, null);
+    }
+
+    public MusicPlayerView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public MusicPlayerView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        initView(context);
+        initListener();
+    }
+
+
+    private void initView(Context context) {
+        view = LayoutInflater.from(getContext()).inflate(R.layout.layout_music_player_view, this, true);
+        Log.e(TAG, "initView....view =" + view);
+        if (view != null) {
+            mMusicHeader = view.findViewById(R.id.iv_yy_tx);
+            mMusicAuthor = view.findViewById(R.id.tv_yy_author);
+            mMusicName = view.findViewById(R.id.tv_yy_name);
+            mPlayTime = view.findViewById(R.id.tv_play_time);
+            mTotalTime = view.findViewById(R.id.tv_total_time);
+            mMusicPlayModel = view.findViewById(R.id.iv_play_model);
+            mMusicControlPre = view.findViewById(R.id.tv_yy_previous);
+            mMusicControlPause = view.findViewById(R.id.tv_yy_pause);
+            mMusicControlNext = view.findViewById(R.id.tv_yy_next);
+            mMusicAnimation = view.findViewById(R.id.iv_music_animation);
+            mSeekBar = view.findViewById(R.id.seekBar);
+        }
+        MusicPlayManager.getInstance(context).checkNotificationService();
+
+        addObserver();
+        MusicPlayManager.getInstance(getContext()).getCurrentMusicInfo();
+    }
+
+    private void initListener() {
+        mMusicControlPre.setOnClickListener(v -> MusicPlayManager.getInstance(getContext()).previous());
+
+        mMusicControlNext.setOnClickListener(v -> MusicPlayManager.getInstance(getContext()).next());
+
+        mMusicControlPause.setOnClickListener(v -> {
+            if (MusicPlayManager.getInstance(getContext()).isPlaying()) {
+                MusicPlayManager.getInstance(getContext()).pause();
+            } else {
+                MusicPlayManager.getInstance(getContext()).play();
+            }
+        });
+    }
+
+    private void addObserver() {
+        MusicInfoLiveData.getLiveData().observeForever(musicInfo -> {
+            mMusicName.setText(musicInfo.title);
+            mMusicAuthor.setText(musicInfo.artist);
+            mMusicHeader.setImageBitmap(musicInfo.albumArt);
+            mSeekBar.setMax((int) musicInfo.duration);
+            if (musicInfo.isHeadsetOn) {
+                mMusicPlayModel.setVisibility(View.VISIBLE);
+            } else {
+                mMusicPlayModel.setVisibility(View.GONE);
+            }
+
+            if (musicInfo.isPlaying) {
+                mMusicControlPause.setSelected(true);
+                mMusicAnimation.startAnimation();
+                mProgressRefresher.stop();
+                mProgressRefresher.start(musicInfo.position, musicInfo.duration, this);
+            } else {
+                mMusicControlPause.setSelected(false);
+                mMusicAnimation.stopAnimation();
+                mProgressRefresher.stop();
+            }
+
+        });
+    }
+
+    /**
+     * 转换成时间 格式 00:11
+     *
+     * @param millis
+     * @return
+     */
+    public String currentTimeMillisToString(long millis) {
+        long minutes = (millis / 1000) / 60;
+        long seconds = (millis / 1000) % 60;
+        return String.format("%02d:%02d", minutes, seconds);
+    }
+
+    @Override
+    public void onProgressUpdate(long position, long duration) {
+        mPlayTime.setText(currentTimeMillisToString(position));
+        mTotalTime.setText(currentTimeMillisToString(duration));
+        mSeekBar.setProgress((int) position);
+    }
+}
