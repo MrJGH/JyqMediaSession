@@ -14,9 +14,9 @@
 
 ## 注意事项
 
-1.使用mediaSession 必须需要android版本5.0以上
-2.需要配置不同的播放器MusicNotifyService 中修改isMusicApp 中可使用的 应用的包名
-目前支持：
+1.使用mediaSession 必须需要android版本5.0以上  
+2.需要配置不同的播放器MusicNotifyService 中修改isMusicApp 中可使用的 应用的包名  
+目前支持：  
 
 ```
    private boolean isMusicApp(String packageName) {
