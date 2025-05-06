@@ -12,12 +12,10 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
-
 import com.yq.mediaSession.R;
-import com.yq.mediaSession.media.MusicInfoLiveData;
-import com.yq.mediaSession.media.MusicPlayManager;
 import com.yq.mediaSession.media.MusicProgressRefresher;
+import com.yq.mediaSession.mediacompat.MusicInfoLiveData2;
+import com.yq.mediaSession.mediacompat.MusicPlayManager2;
 
 
 /**
@@ -25,8 +23,7 @@ import com.yq.mediaSession.media.MusicProgressRefresher;
  * @desc: 播放器view
  * @date: 2025/4/11
  */
-@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-public class MusicPlayerView extends RelativeLayout implements MusicProgressRefresher.OnProgressUpdateListener {
+public class MusicPlayerView2 extends RelativeLayout implements MusicProgressRefresher.OnProgressUpdateListener {
     private static final String TAG = "MusicPlayerView";
     private ImageView mMusicHeader; //音乐头像
     private TextView mMusicAuthor; //音乐歌手
@@ -41,15 +38,15 @@ public class MusicPlayerView extends RelativeLayout implements MusicProgressRefr
     private ProgressBar mSeekBar; //播放进度条
     private final MusicProgressRefresher mProgressRefresher = new MusicProgressRefresher();
 
-    public MusicPlayerView(Context context) {
+    public MusicPlayerView2(Context context) {
         this(context, null);
     }
 
-    public MusicPlayerView(Context context, AttributeSet attrs) {
+    public MusicPlayerView2(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public MusicPlayerView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public MusicPlayerView2(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView(context);
         initListener();
@@ -73,28 +70,27 @@ public class MusicPlayerView extends RelativeLayout implements MusicProgressRefr
             mSeekBar = view.findViewById(R.id.seekBar);
         }
 
-        MusicPlayManager.getInstance(context).checkNotificationService();
-
+        MusicPlayManager2.getInstance(context);
+//        MusicPlayManager2.getInstance(getContext()).getCurrentMusicInfo();
         addObserver();
-        MusicPlayManager.getInstance(getContext()).getCurrentMusicInfo();
     }
 
     private void initListener() {
-        mMusicControlPre.setOnClickListener(v -> MusicPlayManager.getInstance(getContext()).previous());
+        mMusicControlPre.setOnClickListener(v -> MusicPlayManager2.getInstance(getContext()).previous());
 
-        mMusicControlNext.setOnClickListener(v -> MusicPlayManager.getInstance(getContext()).next());
+        mMusicControlNext.setOnClickListener(v -> MusicPlayManager2.getInstance(getContext()).next());
 
         mMusicControlPause.setOnClickListener(v -> {
-            if (MusicPlayManager.getInstance(getContext()).isPlaying()) {
-                MusicPlayManager.getInstance(getContext()).pause();
+            if (MusicPlayManager2.getInstance(getContext()).isPlaying()) {
+                MusicPlayManager2.getInstance(getContext()).pause();
             } else {
-                MusicPlayManager.getInstance(getContext()).play();
+                MusicPlayManager2.getInstance(getContext()).play();
             }
         });
     }
 
     private void addObserver() {
-        MusicInfoLiveData.getLiveData().observeForever(musicInfo -> {
+        MusicInfoLiveData2.getLiveData().observeForever(musicInfo -> {
             mMusicName.setText(musicInfo.title);
             mMusicAuthor.setText(musicInfo.artist);
             mMusicHeader.setImageBitmap(musicInfo.albumArt);

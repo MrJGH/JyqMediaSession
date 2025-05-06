@@ -27,5 +27,6 @@ android {
 
 dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("androidx.media:media:1.6.0")
     implementation("com.google.android.material:material:1.12.0")
 }

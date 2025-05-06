@@ -37,6 +37,7 @@ public class MusicNotifyService extends NotificationListenerService {
                 MusicInfoLiveData.updateMetadata(metadata);
             }
         });
+
         tracker.refreshControllers(); // 初次连接时扫描
         MusicPlayManager.getInstance(this).refreshControllers();
 
@@ -67,7 +68,8 @@ public class MusicNotifyService extends NotificationListenerService {
         return packageName.equals("com.netease.cloudmusic") ||       // 网易云音乐
                 packageName.equals("com.tencent.qqmusic") ||          // QQ 音乐
                 packageName.equals("com.kugou.android") ||            // 酷狗
-                packageName.equals("com.kugou.android.watch.lite");// 酷狗手表
+                packageName.equals("com.kugou.android.watch.lite")||// 酷狗手表
+                packageName.equals("com.jxw.yxxt");// 九学王悦享熏听
     }
 
     @Override

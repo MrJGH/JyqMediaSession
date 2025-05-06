@@ -15,6 +15,8 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import com.yq.mediaSession.mediacompat.MediaControllerTracker2;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +29,7 @@ import java.util.Map;
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class MusicPlayManager {
     private static final String TAG = "MusicPlayManager";
-    private static MusicPlayManager instance;
+    private static volatile MusicPlayManager instance;
     private final Context context;
     private final MediaSessionManager mediaSessionManager;
     private final ComponentName listenerComponent;
@@ -37,7 +39,11 @@ public class MusicPlayManager {
 
     public static MusicPlayManager getInstance(Context context) {
         if (instance == null) {
-            instance = new MusicPlayManager(context);
+            synchronized (MusicPlayManager.class) {
+                if (instance == null) {
+                    instance = new MusicPlayManager(context);
+                }
+            }
         }
         return instance;
     }

@@ -13,7 +13,6 @@ import androidx.annotation.RequiresApi;
  * @desc: 耳机插拔广播
  * @date: 2025/4/21
  */
-@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class HeadsetReceiver extends BroadcastReceiver {
     private static final String TAG = "HeadsetReceiver";
 
