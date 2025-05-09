@@ -5,12 +5,17 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.yq.mediaSession.media.HeadsetReceiver;
+
+import java.util.List;
 
 /**
  * @author: jyq
@@ -25,11 +30,8 @@ public class MusicPlayManager2 {
     private MediaControllerCompat mTargetController = null;
 
     private MediaBrowserCompat mMediaBrowser;
-//    private final String SERVER_PACKAGE = "com.jxw.yxxt"; // 替换为服务端包名
-    private final String SERVER_PACKAGE = "com.example.jyqmediasession"; // 替换为服务端包名
-//    private final String SERVER_SERVICE = "com.jxw.player.media.MusicService"; // 替换服务端全类名
-    private final String SERVER_SERVICE = "com.yq.mediaSession.service.MyMusicService"; // 替换服务端全类名
-//    private final String SERVER_SERVICE = "com.jxw.player.service.PlayerService"; // 替换服务端全类名
+    private final String SERVER_PACKAGE = "com.example.music_server"; // 替换为服务端包名
+    private final String SERVER_SERVICE = "com.example.service.MyMusicService"; // 替换服务端全类名
 
     public static MusicPlayManager2 getInstance(Context context) {
         if (instance == null) {
@@ -61,9 +63,11 @@ public class MusicPlayManager2 {
     private void connect() {
         Log.e(TAG, "connect:  开始服务连接 mediaBrowser=" + mMediaBrowser);
         if (mMediaBrowser == null) {
-            mMediaBrowser = new MediaBrowserCompat(context, new ComponentName(SERVER_PACKAGE, SERVER_SERVICE), connectionCallback, null);
+            Bundle bundle = new Bundle();
+            bundle.putString("yxxt_media_root","jy123");
+            mMediaBrowser = new MediaBrowserCompat(context, new ComponentName(SERVER_PACKAGE, SERVER_SERVICE), connectionCallback, bundle);
         }
-        Log.e(TAG, "connect:  开始服务连接 mediaBrowser.isConnected()=" + mMediaBrowser.isConnected());
+        Log.e(TAG, "connect:  开始服务连接 mediaBrowser.isConnected()=" + mMediaBrowser.isConnected() + " threadName=" + Thread.currentThread().getName());
         if (!mMediaBrowser.isConnected()) {
             mMediaBrowser.connect();
         }
@@ -82,25 +86,36 @@ public class MusicPlayManager2 {
             try {
                 mTargetController = new MediaControllerCompat(context, mMediaBrowser.getSessionToken());
                 MediaControllerTracker2.getInstance().init(context, mTargetController);
-                Log.d(TAG, "Connected to service and controller created.");
+                Log.e(TAG, "服务连接成功");
+                mMediaBrowser.subscribe("yxxt_media_root", subscriptionCallback);
             } catch (Exception e) {
-                Log.e(TAG, "Failed to connect controller", e);
+                Log.e(TAG, "服务连接失败", e);
             }
         }
 
         @Override
         public void onConnectionFailed() {
             super.onConnectionFailed();
-            Log.e(TAG, "onConnectionFailed: ");
+            Log.e(TAG, "onConnectionFailed: 服务连接失败");
         }
 
         @Override
         public void onConnectionSuspended() {
             super.onConnectionSuspended();
-            Log.e(TAG, "onConnectionSuspended: ");
+            Log.e(TAG, "onConnectionSuspended: 服务连接失败");
         }
     };
+    private final MediaBrowserCompat.SubscriptionCallback subscriptionCallback = new MediaBrowserCompat.SubscriptionCallback() {
+        @Override
+        public void onChildrenLoaded(@NonNull String parentId, @NonNull List<MediaBrowserCompat.MediaItem> children) {
+            Log.d(TAG, "onChildrenLoaded for parentId: " + parentId + ", count: " + children.size());
+        }
 
+        @Override
+        public void onError(@NonNull String parentId) {
+            Log.e(TAG, "onError for parentId: " + parentId);
+        }
+    };
 
     public void play() {
         Log.e(TAG, "play 点击了播放 targetController=" + mTargetController);

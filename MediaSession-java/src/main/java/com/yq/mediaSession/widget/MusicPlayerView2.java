@@ -54,7 +54,7 @@ public class MusicPlayerView2 extends RelativeLayout implements MusicProgressRef
 
 
     private void initView(Context context) {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_music_player_view, this, true);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_music_player_view2, this, true);
         Log.e(TAG, "initView....view =" + view);
         if (view != null) {
             mMusicHeader = view.findViewById(R.id.iv_yy_tx);

@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 rootProject.name = "JyqMediaSession"
 include(":app")
 include(":MediaSession-java")
+include(":music_server")

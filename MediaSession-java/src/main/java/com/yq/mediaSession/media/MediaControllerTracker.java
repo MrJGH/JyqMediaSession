@@ -27,7 +27,7 @@ import java.util.Set;
  */
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class MediaControllerTracker {
-    private static final String TAG = "MediaControllerTracker2";
+    private static final String TAG = "MediaControllerTracker";
 
     private final Context context;
     private final Handler handler = new Handler(Looper.getMainLooper());
