@@ -20,10 +20,15 @@ import com.yq.mediaSession.media.MusicInfo;
 public class MusicInfoLiveData {
 
     private static final MutableLiveData<MusicInfo> musicInfoLiveData = new MutableLiveData<>();
+    private static final MutableLiveData<Boolean> notifyServiceStatusLiveData = new MutableLiveData<>();
     private static MusicInfo currentInfo = new MusicInfo("", "", null, null, false, false, 0, 0);
 
     public static LiveData<MusicInfo> getLiveData() {
         return musicInfoLiveData;
+    }
+
+    public static LiveData<Boolean> getNotifyServiceStatusLiveData() {
+        return notifyServiceStatusLiveData;
     }
 
     /**
@@ -68,6 +73,18 @@ public class MusicInfoLiveData {
             musicInfoLiveData.setValue(currentInfo);
         } else {
             musicInfoLiveData.postValue(currentInfo);
+        }
+    }
+
+    /**
+     * 更新 NotificationListenerService 连接状态
+     * @param connectStatus true已经连接 ，false断开连接
+     */
+    public static void updateNotifyServiceStatus(boolean connectStatus) {
+        if (Looper.getMainLooper() == Looper.myLooper()) {
+            notifyServiceStatusLiveData.setValue(connectStatus);
+        } else {
+            notifyServiceStatusLiveData.postValue(connectStatus);
         }
     }
 }

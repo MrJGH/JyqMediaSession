@@ -117,6 +117,14 @@ public class MusicPlayerView extends RelativeLayout implements MusicProgressRefr
             }
 
         });
+        MusicInfoLiveData.getNotifyServiceStatusLiveData().observeForever(connectStatus -> {
+            if (connectStatus) {
+                //处理 连接后的ui变化
+                Log.e(TAG, "处理 连接后的ui变化 connectStatus: " + true);
+            } else {
+                Log.e(TAG, "处理 断开连接后的ui变化 connectStatus: " + false);
+            }
+        });
     }
 
     /**

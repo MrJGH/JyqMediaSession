@@ -40,6 +40,7 @@ public class MusicNotifyService extends NotificationListenerService {
 
         tracker.refreshControllers(); // 初次连接时扫描
         MusicPlayManager.getInstance(this).refreshControllers();
+        MusicInfoLiveData.updateNotifyServiceStatus(true);
 
     }
 
@@ -76,6 +77,7 @@ public class MusicNotifyService extends NotificationListenerService {
     public void onListenerDisconnected() {
         super.onListenerDisconnected();
         Log.d(TAG, "onListenerDisconnected: ");
+        MusicInfoLiveData.updateNotifyServiceStatus(false);
     }
 
     @Override
