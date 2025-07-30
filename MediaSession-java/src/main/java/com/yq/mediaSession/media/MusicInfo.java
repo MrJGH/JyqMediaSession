@@ -1,6 +1,7 @@
 package com.yq.mediaSession.media;
 
 import android.graphics.Bitmap;
+
 /**
  * @author: jyq
  * @desc: 音乐相关参数bean
@@ -18,7 +19,7 @@ public class MusicInfo {
     public long position;     // 当前播放进度（毫秒）
     public long duration;     // 总时长（毫秒）
 
-    public MusicInfo(String title, String artist, Bitmap albumArt,String albumArtUri,
+    public MusicInfo(String title, String artist, Bitmap albumArt, String albumArtUri,
                      boolean isPlaying, boolean isHeadsetOn, long position, long duration) {
         this.title = title;
         this.artist = artist;
@@ -29,4 +30,19 @@ public class MusicInfo {
         this.position = position;
         this.duration = duration;
     }
+
+    @Override
+    public String toString() {
+        return "🎵 MusicInfo {" +
+                "\n  🎶 Title        = '" + title + '\'' +
+                "\n  👤 Artist       = '" + artist + '\'' +
+                "\n  🖼️ Album URI    = '" + albumArtUri + '\'' +
+                "\n  ▶️ Is Playing   = " + isPlaying +
+                "\n  🎧 Headset On   = " + isHeadsetOn +
+                "\n  ⏱️ Position     = " + position + " ms" +
+                "\n  ⏳ Duration     = " + duration + " ms" +
+                "\n}";
+    }
+
+
 }

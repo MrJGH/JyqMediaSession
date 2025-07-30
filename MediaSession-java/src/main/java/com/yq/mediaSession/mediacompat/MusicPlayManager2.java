@@ -25,31 +25,39 @@ import java.util.List;
 public class MusicPlayManager2 {
     private static final String TAG = "MusicPlayManager2";
     private static volatile MusicPlayManager2 instance;
-    private final Context context;
+    private Context context;
     private HeadsetReceiver headsetReceiver;
     private MediaControllerCompat mTargetController = null;
-
+    private static final String ID = "jxw_widget_media_root_id";
     private MediaBrowserCompat mMediaBrowser;
-    private final String SERVER_PACKAGE = "com.example.music_server"; // 替换为服务端包名
-    private final String SERVER_SERVICE = "com.example.service.MyMusicService"; // 替换服务端全类名
+    //    private final String SERVER_PACKAGE = "com.example.music_server"; // 替换为服务端包名
+//    private final String SERVER_SERVICE = "com.example.service.MyMusicService"; // 替换服务端全类名
+    private final String SERVER_PACKAGE = "com.kugou.android.watch.lite"; // 替换为服务端包名
+    private final String SERVER_SERVICE = "com.kugou.android.watch.lite.service.JXWWidgetMediaService"; // 替换服务端全类名
+    private boolean isInitialized = false;
 
-    public static MusicPlayManager2 getInstance(Context context) {
+    public static MusicPlayManager2 getInstance() {
         if (instance == null) {
             synchronized (MusicPlayManager2.class) {
                 if (instance == null) {
-                    instance = new MusicPlayManager2(context);
+                    instance = new MusicPlayManager2();
                 }
             }
         }
         return instance;
     }
 
-    private MusicPlayManager2(Context context) {
+    /**
+     * 对外暴漏的初始化的函数 ，在适当的地方调用，一般在 开启服务之后
+     * @param context
+     */
+    public void init(Context context) {
         this.context = context.getApplicationContext();
-        registerHeadsetReceiver();
         connect();
+        if (isInitialized) return;
+        isInitialized = true;
+        registerHeadsetReceiver();
     }
-
 
     /**
      * 注册耳机插拔广播
@@ -64,7 +72,7 @@ public class MusicPlayManager2 {
         Log.e(TAG, "connect:  开始服务连接 mediaBrowser=" + mMediaBrowser);
         if (mMediaBrowser == null) {
             Bundle bundle = new Bundle();
-            bundle.putString("yxxt_media_root","jy123");
+            bundle.putString(ID, "jy123");
             mMediaBrowser = new MediaBrowserCompat(context, new ComponentName(SERVER_PACKAGE, SERVER_SERVICE), connectionCallback, bundle);
         }
         Log.e(TAG, "connect:  开始服务连接 mediaBrowser.isConnected()=" + mMediaBrowser.isConnected() + " threadName=" + Thread.currentThread().getName());
@@ -84,10 +92,10 @@ public class MusicPlayManager2 {
         @Override
         public void onConnected() {
             try {
+                Log.e(TAG, "服务连接成功 SessionToken:" + mMediaBrowser.getSessionToken());
                 mTargetController = new MediaControllerCompat(context, mMediaBrowser.getSessionToken());
                 MediaControllerTracker2.getInstance().init(context, mTargetController);
-                Log.e(TAG, "服务连接成功");
-                mMediaBrowser.subscribe("yxxt_media_root", subscriptionCallback);
+                mMediaBrowser.subscribe(ID, subscriptionCallback);
             } catch (Exception e) {
                 Log.e(TAG, "服务连接失败", e);
             }

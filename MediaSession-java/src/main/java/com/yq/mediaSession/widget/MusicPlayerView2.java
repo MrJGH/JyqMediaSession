@@ -70,7 +70,6 @@ public class MusicPlayerView2 extends RelativeLayout implements MusicProgressRef
             mSeekBar = view.findViewById(R.id.seekBar);
         }
 
-        MusicPlayManager2.getInstance(context);
 //        MusicPlayManager2.getInstance(getContext()).getCurrentMusicInfo();
         addObserver();
     }
@@ -91,6 +90,7 @@ public class MusicPlayerView2 extends RelativeLayout implements MusicProgressRef
 
     private void addObserver() {
         MusicInfoLiveData2.getLiveData().observeForever(musicInfo -> {
+            Log.e(TAG, "addObserver: musicInfo  = " + musicInfo);
             mMusicName.setText(musicInfo.title);
             mMusicAuthor.setText(musicInfo.artist);
             mMusicHeader.setImageBitmap(musicInfo.albumArt);

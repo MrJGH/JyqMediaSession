@@ -15,11 +15,13 @@ class MusicPlayActivity2 : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_music_play2)
+        MusicPlayManager2.getInstance().init(this)
+
         findViewById<Button>(R.id.back).setOnClickListener { finish() }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        MusicPlayManager2.getInstance(this).release()
+        MusicPlayManager2.getInstance().release()
     }
 }
