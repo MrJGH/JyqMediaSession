@@ -2,6 +2,8 @@ package com.yq.mediaSession.media;
 
 import android.graphics.Bitmap;
 
+import java.util.Objects;
+
 /**
  * @author: jyq
  * @desc: 音乐相关参数bean
@@ -32,10 +34,44 @@ public class MusicInfo {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MusicInfo)) return false;
+        MusicInfo that = (MusicInfo) o;
+
+        return isHeadsetOn == that.isHeadsetOn &&
+                isPlaying == that.isPlaying &&
+                duration == that.duration &&
+                Objects.equals(title, that.title) &&
+                Objects.equals(artist, that.artist) &&
+                Objects.equals(albumArt, that.albumArt) &&
+                Objects.equals(albumArtUri, that.albumArtUri);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, artist, albumArt, albumArtUri, isPlaying, isHeadsetOn, duration);
+    }
+
+    public MusicInfo copy() {
+        return new MusicInfo(
+                this.title,
+                this.artist,
+                this.albumArt,
+                this.albumArtUri,
+                this.isPlaying,
+                this.isHeadsetOn,
+                this.position,
+                this.duration
+        );
+    }
+
+    @Override
     public String toString() {
         return "🎵 MusicInfo {" +
                 "\n  🎶 Title        = '" + title + '\'' +
                 "\n  👤 Artist       = '" + artist + '\'' +
+                "\n  🖼️ Album        = '" + albumArt + '\'' +
                 "\n  🖼️ Album URI    = '" + albumArtUri + '\'' +
                 "\n  ▶️ Is Playing   = " + isPlaying +
                 "\n  🎧 Headset On   = " + isHeadsetOn +

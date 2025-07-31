@@ -15,9 +15,11 @@ import android.widget.TextView;
 import androidx.annotation.RequiresApi;
 
 import com.yq.mediaSession.R;
+import com.yq.mediaSession.media.MusicInfo;
 import com.yq.mediaSession.media.MusicInfoLiveData;
 import com.yq.mediaSession.media.MusicPlayManager;
 import com.yq.mediaSession.media.MusicProgressRefresher;
+import com.yq.mediaSession.mediacompat.MusicInfoLiveData2;
 
 
 /**
@@ -40,6 +42,7 @@ public class MusicPlayerView extends RelativeLayout implements MusicProgressRefr
     private PlayAnimationView mMusicAnimation; //播放动画
     private ProgressBar mSeekBar; //播放进度条
     private final MusicProgressRefresher mProgressRefresher = new MusicProgressRefresher();
+    private MusicInfo mMusicInfo;
 
     public MusicPlayerView(Context context) {
         this(context, null);
@@ -94,28 +97,35 @@ public class MusicPlayerView extends RelativeLayout implements MusicProgressRefr
     }
 
     private void addObserver() {
-        MusicInfoLiveData.getLiveData().observeForever(musicInfo -> {
-            mMusicName.setText(musicInfo.title);
-            mMusicAuthor.setText(musicInfo.artist);
-            mMusicHeader.setImageBitmap(musicInfo.albumArt);
-            mSeekBar.setMax((int) musicInfo.duration);
-            if (musicInfo.isHeadsetOn) {
-                mMusicPlayModel.setVisibility(View.VISIBLE);
-            } else {
-                mMusicPlayModel.setVisibility(View.GONE);
-            }
+        MusicInfoLiveData2.getLiveData().observeForever(musicInfo -> {
+            if (musicInfo != null && !musicInfo.equals(mMusicInfo)) {
+                Log.e(TAG, "addObserver: 更新歌曲信息");
+                mMusicInfo = musicInfo.copy();
+                mMusicName.setText(musicInfo.title);
+                mMusicAuthor.setText(musicInfo.artist);
+                if (musicInfo.albumArt != null) {
+                    mMusicHeader.setImageBitmap(musicInfo.albumArt);
+                }
+                mSeekBar.setMax((int) musicInfo.duration);
+                if (musicInfo.isHeadsetOn) {
+                    mMusicPlayModel.setVisibility(View.VISIBLE);
+                } else {
+                    mMusicPlayModel.setVisibility(View.GONE);
+                }
+                if (musicInfo.isPlaying) {
+                    mMusicControlPause.setSelected(true);
+                    mMusicAnimation.startAnimation();
+                } else {
+                    mMusicControlPause.setSelected(false);
+                    mMusicAnimation.stopAnimation();
+                }
 
-            if (musicInfo.isPlaying) {
-                mMusicControlPause.setSelected(true);
-                mMusicAnimation.startAnimation();
-                mProgressRefresher.stop();
+            }
+            if (musicInfo != null && musicInfo.isPlaying) {
                 mProgressRefresher.start(musicInfo.position, musicInfo.duration, this);
             } else {
-                mMusicControlPause.setSelected(false);
-                mMusicAnimation.stopAnimation();
                 mProgressRefresher.stop();
             }
-
         });
         MusicInfoLiveData.getNotifyServiceStatusLiveData().observeForever(connectStatus -> {
             if (connectStatus) {
